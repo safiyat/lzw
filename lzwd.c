@@ -41,8 +41,8 @@ int read(FILE *file)
 
 int decompression()
 {
-	int size=0, match, term, ocode, ncode;
-	char *p, path[128], *str[MAX], CHAR, STR[32];
+	int size=0, match, term, ocode, ncode, k, klen;
+	char *p, path[128], *str[MAX], CHAR, STR[32], key[33];
 	FILE *ifile, *ofile;
 	printf("\n\nEnter the compressed file's name: ");
 	scanf("%s", path);
@@ -63,11 +63,17 @@ int decompression()
 		printf("\nI/O Error!!!");
 		return -1;
 	}
+	__fpurge(stdin);
+	printf("\nEnter key to decrypt the compressed file: ");
+	gets(key);
+	klen=strlen(key);
+	k=0;
 	init(&size, str);
-	/**********************************************************
-	Input the key from the user, upto 32 characters.
-	**********************************************************/
-	match=read(ifile); //Don't read() directly. Subtract key[k++] first. k is int, initialized as 0.
+	match=read(ifile);
+	match-=key[k];
+	k++;
+	if(k==klen)
+		k=0;
 	ocode=match;
 	fprintf(ofile, "%c", ocode);
 	odsize++;
@@ -76,8 +82,11 @@ int decompression()
 		term=read(ifile);
 		if(term==EOF)
 			break;
-		//Process term here. Subtract key[k++]. Then do k=k%strlen(key).
 		match=term;
+		match-=key[k];
+		k++;
+		if(k==klen)
+			k=0;
 		ncode=match;
 		if(ncode<size)
 			strcpy(STR, str[ncode]);
@@ -91,7 +100,7 @@ int decompression()
 		CHAR=STR[0];
 		strcpy(STR, str[ocode]);
 		addchartostr(CHAR, STR);
-		if(size<4096)
+		if(size<MAX)
 			fill(&size, &str[size], STR);
 		ocode=ncode;
 	};

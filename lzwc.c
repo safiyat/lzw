@@ -45,8 +45,8 @@ int write(FILE *file, int n)
 
 int compression()
 {
-	int ch, size=0, i, match, flag, j, check, exit;
-	char txt[256], *p, *path, *str[MAX], STR[32], CHAR;
+	int ch, size=0, i, match, flag, j, check, exit, k, klen;
+	char txt[256], *p, *path, *str[MAX], STR[32], CHAR, key[33];
 	FILE *ifile, *ofile;
 	printf("\n1. Compress text");
 	printf("\n2. Compress a text file");
@@ -100,18 +100,18 @@ int compression()
 		case 4:
 				return 0;
 	}
-	/**********************************************************
-	Input the key from the user, upto 32 characters.
-	**********************************************************/
+	__fpurge(stdin);
+	printf("\nEnter a passphrase to encrypt the compressed file (upto 32 characters): ");
+	gets(key);
+	klen=strlen(key);
+	k=0;
 	init(&size, str);
 	i=0;
 	if(ch==2)
 		*p=getc(ifile);
 	else
 		p=txt;
-	/**********************************************************
-	Add key[k++] to *p. k is int, initialized as 0.
-	**********************************************************/
+
 	STR[i++]=*p;
 	icsize++;
 	match=STR[0];
@@ -124,9 +124,6 @@ int compression()
 		{
 			p++;
 		}
-		/**********************************************************
-		Add key[k++] to *p. Do k=k%strlen(key) after that.
-		**********************************************************/
 		CHAR=*p;
 		icsize++;
 		if(ch!=2&&CHAR==NULL)
@@ -145,8 +142,12 @@ int compression()
 		}
 		if(flag)
 			continue;
+		match+=key[k];
+		k++;
+		if(k==klen)
+			k=0;
 		check=write(ofile, match);
-		if(size<4096)
+		if(size<MAX)
 			fill(&size, &str[size], STR);
 		i=1;
 		STR[0]=CHAR;
@@ -157,7 +158,13 @@ int compression()
 
 	};
 	if(exit==0)
+	{
+		match+=key[k];
+		k++;
+		if(k==klen)
+			k=0;
 		check=write(ofile, match);
+	}
 	if(check)
 		write(ofile, 0);
 	if(ch==2)

@@ -8,7 +8,7 @@
 #ifndef LZW_H_
 #define LZW_H_
 
-#define MAX 4096
+#define MAX 3820
 
 void fill(int *s, char **stra, const char *temp)
 /*fill entries in the dictionary*/
