@@ -41,7 +41,7 @@ int read(FILE *file)
 
 int decompression()
 {
-	int size=0, match, term, ocode, ncode, k, klen;
+	int size=0, match, term, ocode, ncode, k;
 	char *p, path[128], *str[MAX], CHAR, STR[32], key[33];
 	FILE *ifile, *ofile;
 	printf("\n\nEnter the compressed file's name: ");
@@ -66,13 +66,12 @@ int decompression()
 	__fpurge(stdin);
 	printf("\nEnter key to decrypt the compressed file: ");
 	gets(key);
-	klen=strlen(key);
 	k=0;
 	init(&size, str);
 	match=read(ifile);
 	match-=key[k];
 	k++;
-	if(k==klen)
+	if(k==strlen(key))
 		k=0;
 	ocode=match;
 	fprintf(ofile, "%c", ocode);
@@ -85,7 +84,7 @@ int decompression()
 		match=term;
 		match-=key[k];
 		k++;
-		if(k==klen)
+		if(k==strlen(key))
 			k=0;
 		ncode=match;
 		if(ncode<size)

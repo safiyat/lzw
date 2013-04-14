@@ -45,7 +45,7 @@ int write(FILE *file, int n)
 
 int compression()
 {
-	int ch, size=0, i, match, flag, j, check, exit, k, klen;
+	int ch, size=0, i, match, flag, j, check, exit, k;
 	char txt[256], *p, *path, *str[MAX], STR[32], CHAR, key[33];
 	FILE *ifile, *ofile;
 	printf("\n1. Compress text");
@@ -103,7 +103,6 @@ int compression()
 	__fpurge(stdin);
 	printf("\nEnter a passphrase to encrypt the compressed file (upto 32 characters): ");
 	gets(key);
-	klen=strlen(key);
 	k=0;
 	init(&size, str);
 	i=0;
@@ -144,7 +143,7 @@ int compression()
 			continue;
 		match+=key[k];
 		k++;
-		if(k==klen)
+		if(k==strlen(key))
 			k=0;
 		check=write(ofile, match);
 		if(size<MAX)
@@ -161,7 +160,7 @@ int compression()
 	{
 		match+=key[k];
 		k++;
-		if(k==klen)
+		if(k==strlen(key))
 			k=0;
 		check=write(ofile, match);
 	}
