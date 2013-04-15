@@ -65,7 +65,13 @@ int decompression()
 	}
 	__fpurge(stdin);
 	printf("\nEnter key to decrypt the compressed file: ");
-	gets(key);
+	fgets(key, sizeof(key), stdin);
+	if(!key[0])
+	{
+		p=rindex(path, '.');
+		strcat(path, ".lzw");
+		strncpy(key, path, 32);
+	}
 	k=0;
 	init(&size, str);
 	match=read(ifile);

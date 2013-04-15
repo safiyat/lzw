@@ -46,7 +46,7 @@ int write(FILE *file, int n)
 int compression()
 {
 	int ch, size=0, i, match, flag, j, check, exit, k;
-	char txt[256], *p, *path, *str[MAX], STR[32], CHAR, key[33];
+	char txt[256], *p, path[128], *str[MAX], STR[32], CHAR, key[33];
 	FILE *ifile, *ofile;
 	printf("\n1. Compress text");
 	printf("\n2. Compress a text file");
@@ -61,12 +61,12 @@ int compression()
 				printf("\nEnter text: ");
 				gets(txt);
 				p=txt;
-				ofile=fopen("file.lzw", "wb");
+				strcpy(path, "file.lzw");
+				ofile=fopen(path, "wb");
 				break;
 
 		case 2:
 				printf("Enter the relative path of the text file: ");
-				path=(char *)malloc(sizeof(char)*128);
 				scanf("%s", path);
 				ifile=fopen(path, "r");
 				p=rindex(path, '.');
@@ -93,7 +93,8 @@ int compression()
 		case 3:
 				printf("\n\nSample text:\n She sells seashells by the seashore. The shells she sells are surely seashells. So if she sells shells, on the seashore, I am sure she sells seashore shells.\n\n");
 				strcpy(txt, "She sells seashells by the seashore. The shells she sells are surely seashells. So if she sells shells, on the seashore, I am sure she sells seashore shells.");
-				ofile=fopen("file.lzw", "wb");
+				strcpy(path, "file.lzw");
+				ofile=fopen(path, "wb");
 				p=txt;
 				break;
 
@@ -102,7 +103,9 @@ int compression()
 	}
 	__fpurge(stdin);
 	printf("\nEnter a passphrase to encrypt the compressed file (upto 32 characters): ");
-	gets(key);
+	fgets(key, sizeof(key), stdin);
+	if(!key[0])
+		strncpy(key, path, 32);
 	k=0;
 	init(&size, str);
 	i=0;
