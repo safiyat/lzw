@@ -69,18 +69,26 @@ int compression()
 				printf("Enter the relative path of the text file: ");
 				scanf("%s", path);
 				ifile=fopen(path, "r");
-				p=rindex(path, '.');
-				if(strncmp(p, ".lzw", strlen(p))==0)
+				if(ifile==NULL)
 				{
-					printf("\nAlready a compressed file!!!\n");
-					fclose(ifile);
+					printf("\nI/O Error!!!");
+//					fclose(ifile);
 					return -1;
 				}
+				p=rindex(path, '.');
 				if(p!=NULL)
+				{
+					if(strncmp(p, ".lzw", strlen(p))==0)
+					{
+						printf("\nAlready a compressed file!!!\n");
+						fclose(ifile);
+						return -1;
+					}
 					*p='\0';
+				}
 				strcat(path, ".lzw");
 				ofile=fopen(path, "wb");
-				if((ifile==NULL||ofile==NULL))
+				if(ofile==NULL)
 				{
 					printf("\nI/O Error!!!");
 					fclose(ifile);

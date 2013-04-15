@@ -47,6 +47,11 @@ int decompression()
 	printf("\n\nEnter the compressed file's name: ");
 	scanf("%s", path);
 	ifile=fopen(path, "rb");
+	if(ifile==NULL)
+	{
+		printf("\nI/O Error!!!");
+		return -1;
+	}
 	p=rindex(path, '.');
 	if(strncmp(p, ".lzw", strlen(p)))
 	{
@@ -58,9 +63,10 @@ int decompression()
 		*p='\0';
 	strcat(path, ".txt");
 	ofile=fopen(path, "w");
-	if((ifile==NULL||ofile==NULL))
+	if(ofile==NULL)
 	{
 		printf("\nI/O Error!!!");
+		fclose(ifile);
 		return -1;
 	}
 	__fpurge(stdin);
@@ -94,7 +100,9 @@ int decompression()
 			k=0;
 		ncode=match;
 		if(ncode<size)
+		{
 			strcpy(STR, str[ncode]);
+		}
 		else
 		{
 			strcpy(STR, str[ocode]);
