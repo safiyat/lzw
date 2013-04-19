@@ -118,7 +118,7 @@ int decompression()
 		ocode=ncode;
 	};
 	printf("\nOutput file: %s", path);
-	printf("\nCompressed size: %d Bytes. Decompressed size: %d Bytes.", idsize-1, odsize);
+	printf("\nCompressed size: %d Bytes. Decompressed size: %d Bytes.\tCompression Ratio: %.2f\%\n", idsize-1, odsize, ((float)odsize+1-idsize)*100/odsize);
 	fclose(ifile);
 	fclose(ofile);
 	return 0;

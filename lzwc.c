@@ -72,7 +72,6 @@ int compression()
 				if(ifile==NULL)
 				{
 					printf("\nI/O Error!!!");
-//					fclose(ifile);
 					return -1;
 				}
 				p=rindex(path, '.');
@@ -185,7 +184,7 @@ int compression()
 		printf("%s", path);
 	else
 		printf("file.lzw");
-	printf("\nUncompressed size: %d Bytes. Compressed size: %d Bytes.\n", icsize-1, ocsize);
+	printf("\nUncompressed size: %d Bytes. Compressed size: %d Bytes.\tCompression Ratio: %.2f\%\n", icsize-1, ocsize, ((float)icsize-1-ocsize)*100/(icsize-1));
 	return 0;
 }
 
