@@ -1,10 +1,12 @@
 /*
- * lzwc.c
+ * lzwc.h
  *
- *  Created on: 08-Apr-2013
+ *  Created on: 19-Apr-2013
  *      Author: safiyat
  */
 
+#ifndef LZWC_H_
+#define LZWC_H_
 
 #include <stdio.h>
 #include <stdio_ext.h>
@@ -43,7 +45,7 @@ int write(FILE *file, int n)
 	return 0;
 };
 
-int compression()
+int compression(int enc, int verbose)
 {
 	int ch, size=0, i, match, flag, j, check, exit, k;
 	char txt[256], *p, path[128], *str[MAX], STR[32], CHAR, key[33];
@@ -51,7 +53,7 @@ int compression()
 	printf("\n1. Compress text");
 	printf("\n2. Compress a text file");
 	printf("\n3. See a sample run");
-	printf("\n4. Exit");
+	printf("\n4. Return to Main Menu");
 	printf("\n\nEnter your choice: ");
 	scanf("%d", &ch);
 	switch(ch)
@@ -109,11 +111,14 @@ int compression()
 				return 0;
 	}
 	__fpurge(stdin);
-	printf("\nEnter a passphrase to encrypt the compressed file (upto 32 characters): ");
-	fgets(key, sizeof(key), stdin);
-	if(!key[0])
-		strncpy(key, path, 32);
-	k=0;
+	if(enc)
+	{
+		printf("\nEnter a passphrase to encrypt the compressed file (upto 32 characters): ");
+		fgets(key, sizeof(key), stdin);
+		if(!key[0])
+			strncpy(key, path, 32);
+		k=0;
+	}
 	init(&size, str);
 	i=0;
 	if(ch==2)
@@ -145,19 +150,34 @@ int compression()
 			if(strncmp(str[j], STR, strlen(STR))==0)
 			{
 				match=j;
+				if(verbose)
+					printf("\n\nMatch for \"%s\" found at %d. Matches \"%s\".", STR, match, str[match]);
 				flag=1;
 				break;
 			}
 		}
 		if(flag)
+		{
+			if(verbose)
+				printf(" Continuing...\n");
 			continue;
-		match+=key[k];
-		k++;
-		if(k==strlen(key))
-			k=0;
+		}
+		if(enc)
+		{
+			match+=key[k];
+			k++;
+			if(k==strlen(key))
+				k=0;
+		}
+		if(verbose)
+			printf("\nMatch for \"%s\" not found. Last match was \"%s\" at %d.", STR, str[match], match);
 		check=write(ofile, match);
 		if(size<MAX)
+		{
 			fill(&size, &str[size], STR);
+			if(verbose)
+				printf(" Entered entry for %s at %d.", STR, size);
+		}
 		i=1;
 		STR[0]=CHAR;
 		match=STR[0];
@@ -168,10 +188,13 @@ int compression()
 	};
 	if(exit==0)
 	{
-		match+=key[k];
-		k++;
-		if(k==strlen(key))
-			k=0;
+		if(enc)
+		{
+			match+=key[k];
+			k++;
+			if(k==strlen(key))
+				k=0;
+		}
 		check=write(ofile, match);
 	}
 	if(check)
@@ -188,3 +211,4 @@ int compression()
 	return 0;
 }
 
+#endif /* LZWC_H_ */

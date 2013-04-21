@@ -1,10 +1,12 @@
 /*
- * lzwd.c
+ * lzwd.h
  *
- *  Created on: 08-Apr-2013
+ *  Created on: 19-Apr-2013
  *      Author: safiyat
  */
 
+#ifndef LZWD_H_
+#define LZWD_H_
 
 #include <stdio.h>
 #include <stdio_ext.h>
@@ -39,7 +41,7 @@ int read(FILE *file)
 	return a;
 }
 
-int decompression()
+int decompression(int enc, int cat)
 {
 	int size=0, match, term, ocode, ncode, k;
 	char *p, path[128], *str[MAX], CHAR, STR[32], key[33];
@@ -70,23 +72,31 @@ int decompression()
 		return -1;
 	}
 	__fpurge(stdin);
-	printf("\nEnter key to decrypt the compressed file: ");
-	fgets(key, sizeof(key), stdin);
-	if(!key[0])
+	if(enc)
 	{
-		p=rindex(path, '.');
-		strcat(path, ".lzw");
-		strncpy(key, path, 32);
+		printf("\nEnter key to decrypt the compressed file: ");
+		fgets(key, sizeof(key), stdin);
+		if(!key[0])
+		{
+			p=rindex(path, '.');
+			strcat(path, ".lzw");
+			strncpy(key, path, 32);
+		}
+		k=0;
 	}
-	k=0;
 	init(&size, str);
 	match=read(ifile);
-	match-=key[k];
-	k++;
-	if(k==strlen(key))
-		k=0;
+	if(enc)
+	{
+		match-=key[k];
+		k++;
+		if(k==strlen(key))
+			k=0;
+	}
 	ocode=match;
 	fprintf(ofile, "%c", ocode);
+	if(cat)
+		printf("\n\n\t\t\tDecompression Output\n\n%c", ocode);
 	odsize++;
 	while(1)
 	{
@@ -94,10 +104,13 @@ int decompression()
 		if(term==EOF)
 			break;
 		match=term;
-		match-=key[k];
-		k++;
-		if(k==strlen(key))
-			k=0;
+		if(enc)
+		{
+			match-=key[k];
+			k++;
+			if(k==strlen(key))
+				k=0;
+		}
 		ncode=match;
 		if(ncode<size)
 		{
@@ -109,6 +122,8 @@ int decompression()
 			addchartostr(CHAR, STR);
 		}
 		fprintf(ofile, "%s", STR);
+		if(cat)
+			printf("%s", STR);
 		odsize+=strlen(STR);
 		CHAR=STR[0];
 		strcpy(STR, str[ocode]);
@@ -117,9 +132,11 @@ int decompression()
 			fill(&size, &str[size], STR);
 		ocode=ncode;
 	};
-	printf("\nOutput file: %s", path);
+	printf("\n\nOutput file: %s", path);
 	printf("\nCompressed size: %d Bytes. Decompressed size: %d Bytes.\tCompression Ratio: %.2f\%\n", idsize-1, odsize, ((float)odsize+1-idsize)*100/odsize);
 	fclose(ifile);
 	fclose(ofile);
 	return 0;
 }
+
+#endif /* LZWD_H_ */

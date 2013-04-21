@@ -1,0 +1,174 @@
+/**********************************************************************************
+***********************************************************************************
+***										***
+***	LZW Compression/Decompression Suite, submitted as the assignment	***
+***				in Information Technology.			***
+***										***
+***********************************************************************************
+**********************************************************************************/
+
+				DOCUMENTATION
+
+
+				CONTENTS
+			1. Purpose
+			2. Algorithm
+			3. Environment Variables
+			4. Program Usage and Features
+			5. Example Runs
+			6. Bugs
+			7. Author
+			8. References
+
+
+1. Purpose:
+	This program is written as a complete LZW Compression/Decompression Suite,
+	for submission as an assignment in the subject of Information Technology.
+	The program features compression of text using LZW Algorithm, where the
+	text is inputted from either a file or from STDIN (generally the keyboard).
+	It generates a compressed LZW file, which also is encrypted by a user 
+	defined passphrase employing a self-written encryption algorithm.
+		The same program can then be used to decompress the compressed and
+	encrypted file, using the same passphrase used to compress the file.
+	
+	The file to be compressed can be any kind of text file but the decompressed
+	file is always a TXT file.
+	
+
+
+2. Algorithm:
+	The algorithm used for compressing and decompressing the text files is the
+	fixed-width LZW compression algorithm, which was an improved implementation
+	of the LZ77 compression algorithm. The algorithm employs a dynamically
+	generated dictionary, which is used, and simultaneousl updated too, to
+	provide the 12-bit codes for compression/decompression.
+	
+An excellent guide to LZW Algorithm can be found at: http://www.dspguide.com/ch27/5.htm
+
+		The algorithm used to encrypt the compressed files and decompress
+		the compressed files is a home-made algorithm (christened SRC). It
+		adds each successive character of the passphrase to the each output
+		character of the LZW mechanism. This ensures that each character of
+		the final output stream is displaced by a different distance in the
+		positive direction. The decryption also does the same to each input
+		character before LZW processing, subtracting the characters of the 
+		passphrase to each of the read characters.
+
+
+
+3. Environment Variables
+	The program provides the feature to its users to choose how the program works.
+	The users, in this version of the program are provided the options to change
+	these three settings:
+		1. Turn encryption of the compressed file to ON or OFF.
+		2. Set display option of the complete compression procedure to ON or OFF.
+		3. To set the display of the decompressed output to ON or OFF.
+
+
+
+4. Program Usage & Features:
+	Main Menu:
+		The main menu has three options.
+		
+			1. Compression
+			2. Decompression
+			3. Exit
+		
+		4.1 Compression:
+			The compression menu has four options.
+			
+				1. Compress text
+				2. Compress a text file
+				3. See a sample run
+				4. Return to Main Menu
+				
+			4.1.1 Compress text:
+				Here, the user inputs the text to be inputted (upto
+				256 characters). The user is then prompted for a
+				passphrase to encrypt the resulting compressed file.
+				The user may then choose to either input a
+				passphrase or simply press enter, which would result
+				in encrypting the file with the compressed filename 
+				as the passphrase.
+				The output file is named file.lzw and the compression
+				ratio acheived is displayed.
+			
+			4.1.2 Compress a text file:
+				Here, the user is asked to input the name of the
+				text file to be compressed. It is followed by the
+				prompt to enter the passphrase for encryption.
+				The user may then choose to either input a passphrase
+				or simply press enter, which would result in
+				encrypting the file with the compressed filename as
+				the passphrase.
+				The output file is named <input filename>.lzw and
+				the compression	ratio acheived is displayed.
+				
+			4.1.3 See a sample run:
+				Here, a sample run of the case 1 (Compress text) is
+				shown using the	sample text as the toungue-twister:
+				
+				"She sells seashells by the seashore. The shells she
+				sells are surely seashells. So if she sells shells, 
+				on the seashore, I am sure she sells seashore shells."
+				
+				The user is again prompted for a passphrase.
+				The user may choose to either input a passphrase or
+				simply press enter, which would result in encrypting 
+				the file with the compressed filename as the
+				passphrase. The output file is named file.lzw and
+				the compression ratio acheived is displayed.
+				
+				
+		4.2 Decompression:
+			Here, the user is asked to enter the name of the compressed 
+			file, which has to be a LZW file. After entering the filename,
+			the user is prompted to enter the passphrase to decrypt the
+			file and decompress it.
+			If no passphrase was entered while compression, no passphrase
+			is required to be entered for decompression either.
+			If a non-matching passphrase is entered, the file is
+			decompressed using the incorrect passphrase, yielding
+			incorrect and absurd output.
+			If the decryption and decompression is done properly, an
+			output file by the name <filename>.txt is created and the 
+			compression ratio is displayed.
+
+
+5. Example Runs:
+	The included test.c file to be compressed of size 2.5 MB (24,80,661 bytes) was
+	compressed to a size of 702.8 kB (7,02,818 bytes), giving an effective
+	compression ration of 71.76%.
+	
+	The sample run on the tongue-twister compresses a text of 157 bytes to a
+	compressed file of 128 bytes, yielding a compression of 18.47%.
+	
+	
+	
+6. Bugs:
+	The compression works unpredictably if the file being compressed  is not a
+	text file.
+	The compression works negatively for zero byte files.
+	
+	The decompression is designed to work only upon *.lzw files, but it can be
+	easily fooled if a non-compressed file is renamed as *.lzw or if a compressed
+	file is not named *.lzw.
+	The decompression also works unpredictably (mostly leading to segmentation
+	fault) if the input passphrase to decompress a file is incorrect. The
+	Segmentation Fault occurs in one of the three strcpy() functions in the body
+	of while loop.
+
+
+7. Author:
+	This program was solely authored by Md Safiyat Reza (reza.safiyat@gmail.com)
+	without any copying or pilgiarism from any source of any kind whatsoever.
+	The author rejects any claims of copying or co-authoring from any source,
+	whosoever.
+	
+8. References:
+	The reference for LZW encryption algorithm was taken from
+		http://en.wikipedia.org/wiki/Lempel-Ziv-Welch
+		http://www.dspguide.com/ch27/5.htm
+	
+	The inspiration for converting output to 12-bit codes was taken from
+		http://www.stackoverflow.com
