@@ -17,6 +17,7 @@ int env_var(int *enc, int *verbose, int *cat)
 		printf("\n\n\n\t\t\tSETTINGS\n\n");
 		printf("1. Encryption: %s\n", onoff[*enc]);
 		printf("2. Verbose Compression: %s\n", onoff[*verbose]);
+		// comment
 		printf("3. Display the decompressed output: %s\n", onoff[*cat]);
 		printf("4. Return to Main Menu\n");
 		printf("\nEnter the setting to change, or return (1-4): ");
